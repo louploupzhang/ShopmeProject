@@ -34,7 +34,7 @@ public class CategoryService {
                 String name = "--" + subCategory.getName();
                 hierarchicalCategories.add(Category.copyFull(subCategory, name));
 
-                listSubHierarchicalCategories(hierarchicalCategories, subCategory,1);
+                listSubHierarchicalCategories(hierarchicalCategories, subCategory, 1);
             }
         }
 
@@ -106,5 +106,19 @@ public class CategoryService {
         } catch (NoSuchElementException ex) {
             throw new CategoryNotFoundException("Could not find any category with ID " + id);
         }
+    }
+
+    public String checkUnique(Integer id, String name, String alias) {
+        boolean isCreatingNew = (id == null || id == 0);
+
+        Category categoryByName = repo.findByName(name);
+
+        if (isCreatingNew) {
+            if (categoryByName != null) {
+                return "DuplicateName";
+            }
+        }
+
+        return "OK";
     }
 }

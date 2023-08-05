@@ -50,6 +50,9 @@ public class CategoryController {
                                RedirectAttributes ra) throws IOException {
         if (!multipartFile.isEmpty()) {
             String fileName = StringUtils.cleanPath(multipartFile.getOriginalFilename());
+//            if(fileName.contains(" ")) {
+//                fileName = fileName.replaceAll(" ", "_");
+//            }
             category.setImage(fileName);
 
             Category savedCategory = service.save(category);

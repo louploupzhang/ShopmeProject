@@ -6,6 +6,7 @@ import com.shopme.common.entity.Category;
 import com.shopme.common.entity.Role;
 import com.shopme.common.entity.User;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
@@ -26,9 +27,17 @@ public class CategoryController {
     private CategoryService service;
 
     @GetMapping("/categories")
-    public String listAll(Model model) {
-        List<Category> listCategories = service.listAll();
+    public String listAll(@Param("sortDir") String sortDir, Model model) {
+        if (sortDir == null || sortDir.isEmpty()) {
+            sortDir = "asc";
+        }
+
+        List<Category> listCategories = service.listAll(sortDir);
+
+        String reverseSortDir = sortDir.equals("asc") ? "desc" : "asc";
+
         model.addAttribute("listCategories", listCategories);
+        model.addAttribute("reverseSortDir", reverseSortDir);
 
         return "categories/categories";
     }
@@ -56,10 +65,11 @@ public class CategoryController {
             category.setImage(fileName);
 
             Category savedCategory = service.save(category);
-            String uploadDir = "../category-images/" + savedCategory.getId();
+//            String uploadDir = "../category-images/" + savedCategory.getId();
+            String uploadDir = "category-images/" + savedCategory.getId();
 
             FileUploadUtil.cleanDir(uploadDir);
-            FileUploadUtil.saveFile(uploadDir,fileName,multipartFile);
+            FileUploadUtil.saveFile(uploadDir, fileName, multipartFile);
         } else {
             service.save(category);
         }

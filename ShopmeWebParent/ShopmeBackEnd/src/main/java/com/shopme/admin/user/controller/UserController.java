@@ -164,7 +164,7 @@ public class UserController {
                                           RedirectAttributes redirectAttributes) {
         service.updateUserEnableStatus(id, enabled);
         String status = enabled ? "Enabled" : "Disabled";
-        String message = "The user ID " + id + " has benn " + status;
+        String message = "The user ID " + id + " has been " + status;
         redirectAttributes.addFlashAttribute("message", message);
 
         return "redirect:/users";

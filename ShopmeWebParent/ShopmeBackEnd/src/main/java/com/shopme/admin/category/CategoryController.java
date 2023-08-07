@@ -27,15 +27,26 @@ public class CategoryController {
     private CategoryService service;
 
     @GetMapping("/categories")
-    public String listAll(@Param("sortDir") String sortDir, Model model) {
+    public String listFirstPage(@Param("sortDir") String sortDir, Model model) {
+        return listByPage(1, sortDir, model);
+    }
+
+    @GetMapping("/categories/page/{pageNum}")
+    public String listByPage(@PathVariable(name = "pageNum") int pageNum, @Param("sortDir") String sortDir, Model model) {
         if (sortDir == null || sortDir.isEmpty()) {
             sortDir = "asc";
         }
 
-        List<Category> listCategories = service.listAll(sortDir);
+        CategoryPageInfo pageInfo = new CategoryPageInfo();
+        List<Category> listCategories = service.listByPage(pageInfo, pageNum, sortDir);
 
         String reverseSortDir = sortDir.equals("asc") ? "desc" : "asc";
 
+        model.addAttribute("totalPages", pageInfo.getTotalPages());
+        model.addAttribute("totalItems", pageInfo.getTotalElements());
+        model.addAttribute("currentPage", pageNum);
+        model.addAttribute("sortField", "name");
+        model.addAttribute("sortDir", sortDir);
         model.addAttribute("listCategories", listCategories);
         model.addAttribute("reverseSortDir", reverseSortDir);
 
@@ -97,7 +108,7 @@ public class CategoryController {
 
     @GetMapping("/categories/delete/{id}")
     public String deleteCategory(@PathVariable(name = "id") Integer id, Model model,
-                             RedirectAttributes redirectAttributes) {
+                                 RedirectAttributes redirectAttributes) {
         try {
             service.delete(id);
             String categoryDir = "../category-images/" + id;
@@ -113,7 +124,7 @@ public class CategoryController {
 
     @GetMapping("/categories/{id}/enabled/{status}")
     public String updateCategoryEnabledStatus(@PathVariable("id") Integer id, @PathVariable("status") boolean enabled,
-                                          RedirectAttributes redirectAttributes) {
+                                              RedirectAttributes redirectAttributes) {
         service.updateCategoryEnabledStatus(id, enabled);
         String status = enabled ? "Enabled" : "Disabled";
         String message = "The category ID " + id + " has been " + status;

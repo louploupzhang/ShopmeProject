@@ -5,6 +5,7 @@ import com.lowagie.text.Font;
 import com.lowagie.text.pdf.PdfPCell;
 import com.lowagie.text.pdf.PdfPTable;
 import com.lowagie.text.pdf.PdfWriter;
+import com.shopme.admin.AbstractExporter;
 import com.shopme.common.entity.User;
 
 import javax.servlet.http.HttpServletResponse;
@@ -12,9 +13,9 @@ import java.awt.*;
 import java.io.IOException;
 import java.util.List;
 
-public class UserPdfExporter extends AbstractExporter{
+public class UserPdfExporter extends AbstractExporter {
     public void export(List<User> listUsers, HttpServletResponse response) throws IOException {
-        super.setResponseHeader(response, "application/pdf", ".pdf");
+        super.setResponseHeader(response, "application/pdf", ".pdf", "users_");
 
         Document document = new Document(PageSize.A4);
         PdfWriter.getInstance(document, response.getOutputStream());
@@ -33,7 +34,7 @@ public class UserPdfExporter extends AbstractExporter{
         PdfPTable table = new PdfPTable(6);
         table.setWidthPercentage(100f);
         table.setSpacingBefore(10);
-        table.setWidths(new float[] {1.2f, 3.5f, 3.0f, 3.0f, 3.0f, 1.5f});
+        table.setWidths(new float[]{1.2f, 3.5f, 3.0f, 3.0f, 3.0f, 1.5f});
 
         writeTableHeader(table);
         writeTableData(table, listUsers);

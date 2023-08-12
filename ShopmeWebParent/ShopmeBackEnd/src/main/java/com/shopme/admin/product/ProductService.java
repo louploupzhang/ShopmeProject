@@ -1,6 +1,5 @@
 package com.shopme.admin.product;
 
-import com.shopme.common.entity.Brand;
 import com.shopme.common.entity.Product;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -8,6 +7,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 @Service
 @Transactional
@@ -35,6 +35,23 @@ public class ProductService {
         product.setUpdatedTime(new Date());
 
         return repo.save(product);
+    }
+
+    public Product get(Integer id) throws ProductNotFoundException {
+        try {
+            return repo.findById(id).get();
+        }catch (NoSuchElementException ex){
+            throw new ProductNotFoundException("Could not find any product with ID " + id);
+        }
+    }
+
+    public void delete(Integer id) throws ProductNotFoundException {
+        Long countById = repo.countById(id);
+        if (countById == null || countById == 0) {
+            throw new ProductNotFoundException("Could not find any product with ID " + id);
+        }
+
+        repo.deleteById(id);
     }
 
     public String checkUnique(Integer id, String name) {

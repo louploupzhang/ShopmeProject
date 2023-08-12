@@ -14,12 +14,12 @@ public class MvcConfig implements WebMvcConfigurer {
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
         //Display user photos
         exposeDirectory("user-photos", registry);
-
         //Display category images
         exposeDirectory("../category-images", registry);
-
         //Display brand logos
         exposeDirectory("../brand-logos", registry);
+        //Display brand logos
+        exposeDirectory("../product-images", registry);
     }
 
     private void exposeDirectory(String pathPattern, ResourceHandlerRegistry registry) {

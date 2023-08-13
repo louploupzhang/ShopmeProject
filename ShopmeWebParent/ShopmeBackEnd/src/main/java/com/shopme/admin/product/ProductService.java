@@ -40,7 +40,7 @@ public class ProductService {
     public Product get(Integer id) throws ProductNotFoundException {
         try {
             return repo.findById(id).get();
-        }catch (NoSuchElementException ex){
+        } catch (NoSuchElementException ex) {
             throw new ProductNotFoundException("Could not find any product with ID " + id);
         }
     }

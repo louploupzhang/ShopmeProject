@@ -66,6 +66,15 @@ public class ProductService {
         return repo.save(product);
     }
 
+    public void saveProductPrice(Product productInForm) {
+        Product productInDB = repo.findById(productInForm.getId()).get();
+        productInDB.setCost(productInForm.getCost());
+        productInDB.setPrice(productInForm.getPrice());
+        productInDB.setDiscountPercent(productInForm.getDiscountPercent());
+
+        repo.save(productInDB);
+    }
+
     public Product get(Integer id) throws ProductNotFoundException {
         try {
             return repo.findById(id).get();

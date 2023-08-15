@@ -1,5 +1,8 @@
 package com.shopme.admin;
 
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 
@@ -13,6 +16,12 @@ public class MainController {
 
     @GetMapping("/login")
     public String viewLoginPage() {
-        return "login";
+        //If not logged in, show login page
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication == null || authentication instanceof AnonymousAuthenticationToken) {
+            return "login";
+        }
+        //If already logged in, redirect to home page
+        return "redirect:/";
     }
 }

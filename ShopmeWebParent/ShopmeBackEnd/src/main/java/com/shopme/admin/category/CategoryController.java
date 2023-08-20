@@ -1,12 +1,8 @@
 package com.shopme.admin.category;
 
 import com.shopme.admin.FileUploadUtil;
-import com.shopme.admin.user.UserNotFoundException;
-import com.shopme.admin.user.UserService;
-import com.shopme.admin.user.export.UserCsvExporter;
 import com.shopme.common.entity.Category;
-import com.shopme.common.entity.Role;
-import com.shopme.common.entity.User;
+import com.shopme.common.exception.CategoryNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Controller;

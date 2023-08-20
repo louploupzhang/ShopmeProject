@@ -10,4 +10,6 @@ public interface ProductRepository extends PagingAndSortingRepository<Product, I
 
     @Query("select p from Product p where p.enabled = true and (p.category.id = ?1 or p.category.allParentIDs like %?2%) order by p.name asc")
     public Page<Product> listByCategory(Integer categoryId, String categoryIDMatch, Pageable pageable);
+
+    public Product findByAlias(String alias);
 }

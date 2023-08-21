@@ -32,7 +32,7 @@ public class CurrencyRepositoryTests {
                 new Currency("Brazilian Real", "R$", "BRL"),
                 new Currency("Australian Dollar", "$", "AUD"),
                 new Currency("Canadian Dollar", "$", "CAD"),
-                new Currency("Australian Dong", "₫", "VND"),
+                new Currency("Vietnamese Dong", "₫", "VND"),
                 new Currency("Indian Rupee", "₹", "INR")
         );
 
@@ -41,5 +41,14 @@ public class CurrencyRepositoryTests {
         Iterable<Currency> iterable = repo.findAll();
 
         assertThat(iterable).size().isEqualTo(12);
+    }
+
+    @Test
+    public void testListAllOrderByNameAsc(){
+        List<Currency> currencies = repo.findAllByOrderByNameAsc();
+
+        currencies.forEach(System.out::println);
+
+        assertThat(currencies.size()).isGreaterThan(0);
     }
 }

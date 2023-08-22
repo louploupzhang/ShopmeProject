@@ -12,12 +12,11 @@ public class MvcConfig implements WebMvcConfigurer {
 
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        //Display category images
+        //Display images
         exposeDirectory("../category-images", registry);
-        //Display brand logos
         exposeDirectory("../brand-logos", registry);
-        //Display brand logos
         exposeDirectory("../product-images", registry);
+        exposeDirectory("../site-logo", registry);
     }
 
     private void exposeDirectory(String pathPattern, ResourceHandlerRegistry registry) {

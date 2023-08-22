@@ -1,4 +1,4 @@
-package com.shopme.category;
+package com.shopme.product;
 
 import com.shopme.common.entity.Product;
 import com.shopme.product.ProductRepository;

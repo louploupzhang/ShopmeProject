@@ -45,6 +45,7 @@ public class CountryRepositoryTests {
         String name = "Republic of India";
         Country country = repo.findById(id).get();
         country.setName(name);
+        country.setCode("IN");
         Country updatedCountry = repo.save(country);
 
         assertThat(updatedCountry.getName()).isEqualTo(name);

@@ -27,6 +27,16 @@ public class Country {
         this.code = code;
     }
 
+    public Country(String name) {
+        this.name = name;
+    }
+
+    public Country(Integer id, String name, String code) {
+        this.id = id;
+        this.name = name;
+        this.code = code;
+    }
+
     public Integer getId() {
         return id;
     }
@@ -51,13 +61,13 @@ public class Country {
         this.code = code;
     }
 
-    public Set<State> getStates() {
-        return states;
-    }
-
-    public void setStates(Set<State> states) {
-        this.states = states;
-    }
+//    public Set<State> getStates() {
+//        return states;
+//    }
+//
+//    public void setStates(Set<State> states) {
+//        this.states = states;
+//    }
 
     @Override
     public String toString() {

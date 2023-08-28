@@ -47,8 +47,7 @@ public class UserController {
             @PathVariable(name = "pageNum") int pageNum, Model model,
             @Param("sortField") String sortField,
             @Param("sortDir") String sortDir,
-            @Param("keyword") String keyword
-    ) {
+            @Param("keyword") String keyword) {
         System.out.println("Sort Field: " + sortField);
         System.out.println("Sort Order: " + sortDir);
         Page<User> page = service.listByPage(pageNum, sortField, sortDir, keyword);
@@ -183,7 +182,7 @@ public class UserController {
         List<User> listUsers = service.listAll();
 
         UserExcelExporter exporter = new UserExcelExporter();
-        exporter.export(listUsers,response);
+        exporter.export(listUsers, response);
     }
 
     @GetMapping("/users/export/pdf")
@@ -191,6 +190,6 @@ public class UserController {
         List<User> listUsers = service.listAll();
 
         UserPdfExporter exporter = new UserPdfExporter();
-        exporter.export(listUsers,response);
+        exporter.export(listUsers, response);
     }
 }

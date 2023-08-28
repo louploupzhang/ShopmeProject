@@ -20,6 +20,6 @@ public interface CustomerRepository extends PagingAndSortingRepository<Customer,
 
     Long countById(Integer id);
 
-    @Query("select c from Customer c where concat(c.firstName, ' ', c.lastName, ' ', c.email, ' ', c.addressLine1, ' ', c.addressLine2, ' ',c.city, ' ', c.state, ' ', c.country, ' ', c.postalCode) like %?1%")
+    @Query("select c from Customer c where concat(c.firstName, ' ', c.lastName, ' ', c.email, ' ', c.addressLine1, ' ', c.addressLine2, ' ',c.city, ' ', c.state, ' ', c.country.name, ' ', c.postalCode) like %?1%")
     public Page<Customer> findAll(String keyword, Pageable pageable);
 }

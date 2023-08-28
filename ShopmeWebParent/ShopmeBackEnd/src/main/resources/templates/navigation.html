@@ -63,24 +63,11 @@
                 </th:block>
 
                 <th:block sec:authorize="hasAnyAuthority('Admin', 'Salesperson')">
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" data-toggle="dropdown"
-                           th:href="@{/customers}">Customers</a>
-                        <div class="dropdown-menu">
-                            <a class="dropdown-item" th:href="@{/customers/new}">Create New</a>
-                            <a class="dropdown-item" th:href="@{/customers}">View All</a>
-                        </div>
+                    <li class="nav-item">
+                        <a class="nav-link" th:href="@{/customers}">Customers</a>
                     </li>
-                </th:block>
-
-                <th:block sec:authorize="hasAnyAuthority('Admin', 'Salesperson')">
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" data-toggle="dropdown"
-                           th:href="@{/shipping}">Shipping</a>
-                        <div class="dropdown-menu">
-                            <a class="dropdown-item" th:href="@{/shipping/new}">Create New</a>
-                            <a class="dropdown-item" th:href="@{/shippings}">View All</a>
-                        </div>
+                    <li class="nav-item">
+                        <a class="nav-link" th:href="@{/shipping}">Shipping</a>
                     </li>
                 </th:block>
 

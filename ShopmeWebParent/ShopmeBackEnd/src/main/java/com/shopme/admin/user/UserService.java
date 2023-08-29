@@ -7,6 +7,7 @@ import java.util.Optional;
 
 import javax.transaction.Transactional;
 
+import com.shopme.admin.paging.PagingAndSortingHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -40,18 +41,8 @@ public class UserService {
         return (List<User>) userRepo.findAll(Sort.by("firstName").ascending());
     }
 
-    public Page<User> listByPage(int pageNum, String sortField, String sortDir, String keyword) {
-        Sort sort = Sort.by(sortField);
-
-        sort = sortDir.equals("asc") ? sort.ascending() : sort.descending();
-
-        Pageable pageable = PageRequest.of(pageNum - 1, USERS_PER_PAGE, sort);
-
-        if (keyword != null) {
-            return userRepo.findAll(keyword, pageable);
-        }
-
-        return userRepo.findAll(pageable);
+    public void listByPage(int pageNum, PagingAndSortingHelper helper) {
+        helper.listEntities(pageNum, USERS_PER_PAGE, userRepo);
     }
 
     public List<Role> listRoles() {
@@ -76,15 +67,15 @@ public class UserService {
         return userRepo.save(user);
     }
 
-    public User updateAccount(User userInForm){
+    public User updateAccount(User userInForm) {
         User userInDB = userRepo.findById(userInForm.getId()).get();
 
-        if (!userInForm.getPassword().isEmpty()){
+        if (!userInForm.getPassword().isEmpty()) {
             userInDB.setPassword(userInForm.getPassword());
             encodePassword(userInDB);
         }
 
-        if (userInForm.getPhotos() != null){
+        if (userInForm.getPhotos() != null) {
             userInDB.setPhotos(userInForm.getPhotos());
         }
 

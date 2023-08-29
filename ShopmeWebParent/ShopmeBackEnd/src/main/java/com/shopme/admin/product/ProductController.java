@@ -3,6 +3,8 @@ package com.shopme.admin.product;
 import com.shopme.admin.FileUploadUtil;
 import com.shopme.admin.brand.BrandService;
 import com.shopme.admin.category.CategoryService;
+import com.shopme.admin.paging.PagingAndSortingHelper;
+import com.shopme.admin.paging.PagingAndSortingParam;
 import com.shopme.admin.security.ShopmeUserDetails;
 import com.shopme.common.entity.Brand;
 import com.shopme.common.entity.Category;
@@ -34,44 +36,19 @@ public class ProductController {
     private CategoryService categoryService;
 
     @GetMapping("/products")
-    public String listFirstPage(Model model) {
-        return listByPage(1, model, "name", "asc", null, 0);
+    public String listFirstPage() {
+        return "redirect:/products/page/1?sortField=name&sortDir=asc&categoryId=0";
     }
 
     @GetMapping("/products/page/{pageNum}")
-    public String listByPage(
-            @PathVariable(name = "pageNum") int pageNum, Model model,
-            @Param("sortField") String sortField,
-            @Param("sortDir") String sortDir,
-            @Param("keyword") String keyword,
-            @Param("categoryId") Integer categoryId
-    ) {
-        Page<Product> page = productService.listByPage(pageNum, sortField, sortDir, keyword, categoryId);
-        List<Product> listProducts = page.getContent();
+    public String listByPage(@PagingAndSortingParam(listName = "listProducts", moduleURL = "/products") PagingAndSortingHelper helper,
+                             @PathVariable(name = "pageNum") int pageNum, Model model,
+                             @Param("categoryId") Integer categoryId) {
+        productService.listByPage(pageNum, helper, categoryId);
         List<Category> listCategories = categoryService.listCategoriesUsedInForm();
 
-        long startCount = (pageNum - 1) * ProductService.PRODUCTS_PER_PAGE + 1;
-        long endCount = startCount + ProductService.PRODUCTS_PER_PAGE - 1;
-        if (endCount > page.getTotalElements()) {
-            endCount = page.getTotalElements();
-        }
-
-        String reverseSortDir = sortDir.equals("asc") ? "desc" : "asc";
-
         if (categoryId != null) model.addAttribute("categoryId", categoryId);
-
-        model.addAttribute("currentPage", pageNum);
-        model.addAttribute("totalPages", page.getTotalPages());
-        model.addAttribute("startCount", startCount);
-        model.addAttribute("endCount", endCount);
-        model.addAttribute("totalItems", page.getTotalElements());
-        model.addAttribute("listProducts", listProducts);
-        model.addAttribute("sortField", sortField);
-        model.addAttribute("sortDir", sortDir);
-        model.addAttribute("reverseSortDir", reverseSortDir);
-        model.addAttribute("keyword", keyword);
         model.addAttribute("listCategories", listCategories);
-        model.addAttribute("moduleURL", "/products");
 
         return "products/products";
     }
@@ -101,13 +78,14 @@ public class ProductController {
                               @RequestParam(name = "detailValues", required = false) String[] detailValues,
                               @RequestParam(name = "imageIDs", required = false) String[] imageIDs,
                               @RequestParam(name = "imageNames", required = false) String[] imageNames,
-                              @AuthenticationPrincipal ShopmeUserDetails loggedUser
-                              ) throws IOException {
+                              @AuthenticationPrincipal ShopmeUserDetails loggedUser) throws IOException {
         //Salesperson can only save the prices
-        if(loggedUser.hasRole("Salesperson")){
-            productService.saveProductPrice(product);
-            ra.addFlashAttribute("message", "The product has been saved successfully.");
-            return "redirect:/products";
+        if (!loggedUser.hasRole("Admin") && !loggedUser.hasRole("Editor")) {
+            if (loggedUser.hasRole("Salesperson")) {
+                productService.saveProductPrice(product);
+                ra.addFlashAttribute("message", "The product has been saved successfully.");
+                return "redirect:/products";
+            }
         }
         //For roles other than salesperson
         ProductSaveHelper.setMainImageName(mainImageMultipart, product);

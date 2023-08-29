@@ -1,5 +1,6 @@
 package com.shopme.admin.customer;
 
+import com.shopme.admin.paging.SearchRepository;
 import com.shopme.common.entity.Customer;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -7,7 +8,7 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.PagingAndSortingRepository;
 
-public interface CustomerRepository extends PagingAndSortingRepository<Customer, Integer> {
+public interface CustomerRepository extends SearchRepository<Customer, Integer> {
     @Query("select c from Customer c where c.email = ?1")
     Customer findByEmail(String email);
 

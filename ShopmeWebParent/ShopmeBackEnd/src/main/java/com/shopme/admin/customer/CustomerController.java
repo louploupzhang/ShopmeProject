@@ -1,5 +1,7 @@
 package com.shopme.admin.customer;
 
+import com.shopme.admin.paging.PagingAndSortingHelper;
+import com.shopme.admin.paging.PagingAndSortingParam;
 import com.shopme.common.entity.Country;
 import com.shopme.common.entity.Customer;
 import com.shopme.common.exception.CustomerNotFoundException;
@@ -21,38 +23,14 @@ public class CustomerController {
     private CustomerService service;
 
     @GetMapping("/customers")
-    public String listFirstPage(Model model) {
-        return listByPage(model, 1, "firstName", "asc", null);
+    public String listFirstPage() {
+        return "redirect:/customers/page/1?sortField=firstName&sortDir=asc";
     }
 
     @GetMapping("/customers/page/{pageNum}")
-    private String listByPage(Model model,
-                              @PathVariable(name = "pageNum") int pageNum,
-                              @Param("sortField") String sortField,
-                              @Param("sortDir") String sortDir,
-                              @Param("keyword") String keyword) {
-        Page<Customer> page = service.listByPage(pageNum, sortField, sortDir, keyword);
-        List<Customer> listCustomers = page.getContent();
-
-        long startCount = (pageNum - 1) * CustomerService.CUSTOMERS_PER_PAGE + 1;
-        long endCount = startCount + CustomerService.CUSTOMERS_PER_PAGE - 1;
-        if (endCount > page.getTotalElements()) {
-            endCount = page.getTotalElements();
-        }
-
-        String reverseSortDir = sortDir.equals("asc") ? "desc" : "asc";
-
-        model.addAttribute("currentPage", pageNum);
-        model.addAttribute("totalPages", page.getTotalPages());
-        model.addAttribute("startCount", startCount);
-        model.addAttribute("endCount", endCount);
-        model.addAttribute("totalItems", page.getTotalElements());
-        model.addAttribute("listCustomers", listCustomers);
-        model.addAttribute("sortField", sortField);
-        model.addAttribute("sortDir", sortDir);
-        model.addAttribute("reverseSortDir", reverseSortDir);
-        model.addAttribute("keyword", keyword);
-        model.addAttribute("moduleURL", "/customers");
+    private String listByPage(@PagingAndSortingParam(listName = "listCustomers", moduleURL = "/customers") PagingAndSortingHelper helper,
+                              @PathVariable(name = "pageNum") int pageNum) {
+        service.listByPage(pageNum, helper);
 
         return "customers/customers";
     }
@@ -100,18 +78,18 @@ public class CustomerController {
     }
 
     @PostMapping("/customers/save")
-    public String saveCustomer(Customer customer, Model model, RedirectAttributes ra){
+    public String saveCustomer(Customer customer, Model model, RedirectAttributes ra) {
         service.save(customer);
-        ra.addFlashAttribute("message", "The customer ID "+customer.getId()+" has been updated successfully.");
+        ra.addFlashAttribute("message", "The customer ID " + customer.getId() + " has been updated successfully.");
         return "redirect:/customers";
     }
 
     @GetMapping("/customers/delete/{id}")
-    public String deleteCustomer(@PathVariable Integer id, RedirectAttributes ra){
-        try{
+    public String deleteCustomer(@PathVariable Integer id, RedirectAttributes ra) {
+        try {
             service.delete(id);
-            ra.addFlashAttribute("message", "The customer ID "+id+" has been deleted successfully.");
-        }catch (CustomerNotFoundException e){
+            ra.addFlashAttribute("message", "The customer ID " + id + " has been deleted successfully.");
+        } catch (CustomerNotFoundException e) {
             ra.addFlashAttribute("message", e.getMessage());
         }
 

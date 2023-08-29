@@ -1,5 +1,6 @@
 package com.shopme.admin.product;
 
+import com.shopme.admin.paging.SearchRepository;
 import com.shopme.common.entity.Product;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -8,7 +9,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.PagingAndSortingRepository;
 
 
-public interface ProductRepository extends PagingAndSortingRepository<Product, Integer> {
+public interface ProductRepository extends SearchRepository<Product, Integer> {
 
     public Long countById(Integer id);
 

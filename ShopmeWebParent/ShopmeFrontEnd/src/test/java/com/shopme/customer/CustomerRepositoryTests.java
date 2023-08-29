@@ -1,6 +1,7 @@
-package com.shopme.admin.setting.customer;
+package com.shopme.customer;
 
-import com.shopme.admin.customer.CustomerRepository;
+import com.shopme.common.entity.AuthenticationType;
+import com.shopme.customer.CustomerRepository;
 import com.shopme.common.entity.Country;
 import com.shopme.common.entity.Customer;
 import org.junit.jupiter.api.Test;
@@ -135,9 +136,18 @@ public class CustomerRepositoryTests {
     @Test
     public void testEnableCustomer() {
         Integer customerId = 1;
-        repo.updateEnabledStatus(customerId, true);
+        repo.enable(customerId);
 
         Customer customer = repo.findById(customerId).get();
         assertThat(customer.isEnabled()).isTrue();
+    }
+
+    @Test
+    public void testUpdateAuthenticationType() {
+        Integer id = 1;
+        repo.updateAuthenticationType(id, AuthenticationType.DATABASE);
+
+        Customer customer = repo.findById(id).get();
+        assertThat(customer.getAuthenticationType()).isEqualTo(AuthenticationType.DATABASE);
     }
 }

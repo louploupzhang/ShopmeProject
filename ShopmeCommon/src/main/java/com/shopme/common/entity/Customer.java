@@ -52,6 +52,10 @@ public class Customer {
     @JoinColumn(name = "country_id")
     private Country country;
 
+    @Enumerated(EnumType.STRING)
+    @Column(name = "authentication_type", length = 10)
+    private AuthenticationType authenticationType;
+
     public Customer() {
     }
 
@@ -173,6 +177,14 @@ public class Customer {
 
     public void setCountry(Country country) {
         this.country = country;
+    }
+
+    public AuthenticationType getAuthenticationType() {
+        return authenticationType;
+    }
+
+    public void setAuthenticationType(AuthenticationType authenticationType) {
+        this.authenticationType = authenticationType;
     }
 
     @Override

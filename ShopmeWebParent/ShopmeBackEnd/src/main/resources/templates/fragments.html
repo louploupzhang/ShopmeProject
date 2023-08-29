@@ -21,7 +21,7 @@
     <p>Shopme Control Panel - Copyright &copy; Shopme</p>
 </div>
 <!--Column link URL-->
-<th th:fragment="column_link(moduleURL, fieldName, columnLabel, removeTag)" th:remove="${removeTag}">
+<th th:fragment="column_link(fieldName, columnLabel, removeTag)" th:remove="${removeTag}">
     <a class="text-white"
        th:href="@{${moduleURL} + '/page/' + ${currentPage} + '?sortField=' + ${fieldName} + '&sortDir=' + ${sortField != fieldName ? sortDir : reverseSortDir} + ${keyword != null ? '&keyword=' + keyword : ''} + ${categoryId != null ? '&categoryId=' + categoryId : ''}}">
         [[${columnLabel}]]
@@ -30,7 +30,7 @@
           th:class="${sortDir == 'asc' ? 'fas fa-sort-up' : 'fas fa-sort-down'}"></span>
 </th>
 <!--Page link URL-->
-<a th:fragment="page_link(moduleURL, pageNum, paginationBtn)"
+<a th:fragment="page_link(pageNum, paginationBtn)"
    class="page-link"
    th:href="@{${moduleURL} + '/page/' + ${pageNum} + '?sortField=' + ${sortField} + '&sortDir=' + ${sortDir} + ${keyword != null ? '&keyword=' + keyword : ''} + ${categoryId != null ? '&categoryId=' + categoryId : ''}}">[[${paginationBtn}]]</a>
 </body>
@@ -67,7 +67,7 @@
     </th:block>
 </div>
 <!--Pagination-->
-<div th:fragment="pagination(moduleURL, entityName)" th:remove="tag">
+<div th:fragment="pagination(entityName)" th:remove="tag">
     <div class="text-center m-1" th:if="${totalItems > 0}">
         <span>Showing [[${entityName}]] # [[${startCount}]] to [[${endCount}]] of [[${totalItems}]]</span>
     </div>
@@ -78,28 +78,28 @@
         <nav>
             <ul class="pagination justify-content-center flex-wrap">
                 <li th:class="${currentPage > 1 ? 'page-item' : 'page-item disabled'}">
-                    <a th:replace="fragments :: page_link(${moduleURL}, 1, 'First')"></a>
+                    <a th:replace="fragments :: page_link(1, 'First')"></a>
                 </li>
                 <li th:class="${currentPage > 1 ? 'page-item' : 'page-item disabled'}">
-                    <a th:replace="fragments :: page_link(${moduleURL}, ${currentPage - 1}, 'Previous')"></a>
+                    <a th:replace="fragments :: page_link(${currentPage - 1}, 'Previous')"></a>
                 </li>
                 <li th:class="${currentPage != i ? 'page-item' : 'page-item active'}"
                     th:each="i : ${#numbers.sequence(1, totalPages)}">
-                    <a th:replace="fragments :: page_link(${moduleURL}, ${i}, ${i})"></a>
+                    <a th:replace="fragments :: page_link(${i}, ${i})"></a>
                 </li>
                 <li th:class="${currentPage < totalPages ? 'page-item' : 'page-item disabled'}">
-                    <a th:replace="fragments :: page_link(${moduleURL}, ${currentPage + 1}, 'Next')"></a>
+                    <a th:replace="fragments :: page_link(${currentPage + 1}, 'Next')"></a>
                 </li>
                 <li th:class="${currentPage < totalPages ? 'page-item' : 'page-item disabled'}">
-                    <a th:replace="fragments :: page_link(${moduleURL}, ${totalPages}, 'Last')"></a>
+                    <a th:replace="fragments :: page_link(${totalPages}, 'Last')"></a>
                 </li>
             </ul>
         </nav>
     </div>
 </div>
 <!--Search-->
-<div th:fragment="search_form_and_message(moduleURL)">
-    <form th:action="@{${moduleURL}}" class="form-inline m-3">
+<div th:fragment="search_form_and_message()">
+    <form th:action="@{${moduleURL} + '/page/1'}" class="form-inline m-3">
         <input type="hidden" name="sortField" th:value="${sortField}">
         <input type="hidden" name="sortDir" th:value="${sortDir}">
 

@@ -65,13 +65,21 @@ public class CustomerService {
     }
 
     public void save(Customer customerInForm) {
+        Customer customerInDB = customerRepo.findById(customerInForm.getId()).get();
+
         if(!customerInForm.getPassword().isEmpty()){
             String encodedPassword = passwordEncoder.encode(customerInForm.getPassword());
             customerInForm.setPassword(encodedPassword);
         }else {
-            Customer customerInDB = customerRepo.findById(customerInForm.getId()).get();
             customerInForm.setPassword(customerInDB.getPassword());
         }
+
+        //To avoid these 3 attributes get reset after updating customer
+        //Because these 3 fields are not showed in the customer form
+        customerInForm.setEnabled(customerInDB.isEnabled());
+        customerInForm.setCreatedTime(customerInDB.getCreatedTime());
+        customerInForm.setVerificationCode(customerInDB.getVerificationCode());
+
         customerRepo.save(customerInForm);
     }
 

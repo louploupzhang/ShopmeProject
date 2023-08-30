@@ -105,4 +105,29 @@ public class CustomerService {
             customer.setLastName(lastName);
         }
     }
+
+    public void update(Customer customerInForm) {
+        Customer customerInDB = customerRepo.findById(customerInForm.getId()).get();
+
+        if (customerInDB.getAuthenticationType().equals(AuthenticationType.DATABASE)) {
+            if (!customerInForm.getPassword().isEmpty()) {
+                String encodedPassword = passwordEncoder.encode(customerInForm.getPassword());
+                customerInForm.setPassword(encodedPassword);
+            } else {
+                customerInForm.setPassword(customerInDB.getPassword());
+            }
+        } else {
+            //To avoid null reference exception when the authentication type is not database
+            customerInForm.setPassword(customerInDB.getPassword());
+        }
+
+        //To avoid these attributes get reset after updating customer
+        //Because these fields are not showed in the customer form
+        customerInForm.setEnabled(customerInDB.isEnabled());
+        customerInForm.setCreatedTime(customerInDB.getCreatedTime());
+        customerInForm.setVerificationCode(customerInDB.getVerificationCode());
+        customerInForm.setAuthenticationType(customerInDB.getAuthenticationType());
+
+        customerRepo.save(customerInForm);
+    }
 }

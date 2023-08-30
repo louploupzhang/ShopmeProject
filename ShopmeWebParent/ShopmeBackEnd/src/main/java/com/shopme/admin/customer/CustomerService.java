@@ -67,11 +67,12 @@ public class CustomerService {
             customerInForm.setPassword(customerInDB.getPassword());
         }
 
-        //To avoid these 3 attributes get reset after updating customer
-        //Because these 3 fields are not showed in the customer form
+        //To avoid these attributes get reset after updating customer
+        //Because these fields are not showed in the customer form
         customerInForm.setEnabled(customerInDB.isEnabled());
         customerInForm.setCreatedTime(customerInDB.getCreatedTime());
         customerInForm.setVerificationCode(customerInDB.getVerificationCode());
+        customerInForm.setAuthenticationType(customerInDB.getAuthenticationType());
 
         customerRepo.save(customerInForm);
     }

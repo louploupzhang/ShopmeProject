@@ -27,8 +27,8 @@ public class SettingFilter implements Filter {
 
         List<Setting> generalSettings = service.getGeneralSettings();
         generalSettings.forEach(setting -> {
-//            System.out.println(setting);
             servletRequest.setAttribute(setting.getKey(), setting.getValue());
+            System.out.println(setting.getKey() + " == > " + setting.getValue());
         });
 
         filterChain.doFilter(servletRequest, servletResponse);

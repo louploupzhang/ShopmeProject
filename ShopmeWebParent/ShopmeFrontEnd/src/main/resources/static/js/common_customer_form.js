@@ -24,6 +24,8 @@ function loadStatesForCountry() {
         $.each(responseJSON, function (index, state) {
             $("<option>").val(state.name).text(state.name).appendTo(dateListState);
         })
+    }).fail(function() {
+        alert('Failed to connect to the server!');
     });
 }
 

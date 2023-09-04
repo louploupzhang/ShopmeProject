@@ -116,7 +116,14 @@ public class CustomerController {
         ra.addFlashAttribute("message", "Your account details have been updated.");
         updateNameForAuthenticatedCustomer(customer, request);
 
-        return "redirect:/account_details";
+        String redirectOption = request.getParameter("redirect");
+        String redirectURL = "redirect:/account_details";
+
+        if (redirectOption.equals("address_book")) {
+            redirectURL = "redirect:/address_book";
+        }
+
+        return redirectURL;
     }
 
     private void updateNameForAuthenticatedCustomer(Customer customer, HttpServletRequest request) {

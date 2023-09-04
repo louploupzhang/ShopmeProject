@@ -3,7 +3,7 @@ package com.shopme.common.entity;
 import javax.persistence.*;
 
 @Entity
-@Table(name = "address")
+@Table(name = "addresses")
 public class Address {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

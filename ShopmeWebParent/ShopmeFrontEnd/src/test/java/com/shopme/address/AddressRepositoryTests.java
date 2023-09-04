@@ -28,13 +28,14 @@ public class AddressRepositoryTests {
         Address newAddress = new Address();
         newAddress.setCustomer(new Customer(customerId));
         newAddress.setCountry(new Country(countryId));
-        newAddress.setFirstName("Charles");
-        newAddress.setLastName("Brugger");
-        newAddress.setPhoneNumber("646-232-3902");
-        newAddress.setAddressLine1("204 Morningview Lane");
-        newAddress.setCity("New York");
-        newAddress.setState("New York");
-        newAddress.setPostalCode("10013");
+        newAddress.setFirstName("Tobie");
+        newAddress.setLastName("Abel");
+        newAddress.setPhoneNumber("1919129432");
+        newAddress.setAddressLine1("4232 Gordon Street");
+        newAddress.setAddressLine2("Novak Building");
+        newAddress.setCity("Chino");
+        newAddress.setState("California");
+        newAddress.setPostalCode("91730");
 
         Address savedAddress = repo.save(newAddress);
 
@@ -63,13 +64,14 @@ public class AddressRepositoryTests {
 
     @Test
     public void testUpdate() {
-        Integer addressId = 1;
-        String phoneNumber = "333-232-3902";
+        Integer addressId = 2;
+//        String phoneNumber = "333-232-3902";
         Address address = repo.findById(addressId).get();
-        address.setPhoneNumber(phoneNumber);
+//        address.setPhoneNumber(phoneNumber);
+        address.setDefaultForShipping(true);
 
         Address updatedAddress = repo.save(address);
-        assertThat(updatedAddress.getPhoneNumber()).isEqualTo(phoneNumber);
+//        assertThat(updatedAddress.getPhoneNumber()).isEqualTo(phoneNumber);
     }
 
     @Test

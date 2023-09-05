@@ -1,4 +1,4 @@
-package com.shopme.common.entity;
+package com.shopme.common.entity.setting;
 
 import javax.persistence.*;
 import java.util.Objects;

@@ -46,8 +46,7 @@
                 <td>
                     <a class="fas fa-file-alt fa-2x icon-green linkOrderDetail"
                        th:href="@{'/orders/detail/' + ${order.id}}"
-                       title="View details of this order"
-                    ></a>
+                       title="View details of this order"></a>
                     &nbsp;
                     <div th:replace="fragments :: edit('order', '/orders/edit/' + ${order.id})"/>
                     &nbsp;
@@ -86,7 +85,15 @@
     $(document).ready(function () {
         handleLinkViewCustomerDetails();
         handleLinkViewOrderDetails();
+        handleLinkDeleteOrder();
     });
+
+    function handleLinkDeleteOrder() {
+        $(".link-delete").on("click", function (e) {
+            e.preventDefault();
+            showDeleteConfirmModal($(this), 'order')
+        });
+    }
 
     function handleLinkViewCustomerDetails() {
         $(".linkCustomerDetail").on("click", function (e) {

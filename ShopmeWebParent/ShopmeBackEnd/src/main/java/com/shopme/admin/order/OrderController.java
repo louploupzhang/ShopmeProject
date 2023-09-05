@@ -61,4 +61,16 @@ public class OrderController {
             return defaultRedirectURL;
         }
     }
+
+    @GetMapping("/orders/delete/{id}")
+    public String deleteOrder(@PathVariable("id") Integer id, Model model, RedirectAttributes ra) {
+        try {
+            orderService.delete(id);
+            ra.addFlashAttribute("message", "The order ID " + id + " has been deleted.");
+        } catch (OrderNotFoundException e) {
+            ra.addFlashAttribute("message", e.getMessage());
+        }
+
+        return defaultRedirectURL;
+    }
 }

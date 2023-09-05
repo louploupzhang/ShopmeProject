@@ -15,4 +15,6 @@ public interface OrderRepository extends PagingAndSortingRepository<Order, Integ
             + " o.paymentMethod like %?1% or o.status like %?1% or"
             + " o.customer.firstName like %?1% or o.customer.lastName like %?1%")
     Page<Order> findAll(String keyword, Pageable pageable);
+
+    Long countById(Integer id);
 }

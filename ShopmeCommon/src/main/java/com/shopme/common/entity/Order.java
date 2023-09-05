@@ -239,7 +239,7 @@ public class Order {
         this.orderDetails = orderDetails;
     }
 
-    public void copyAddressFromCustomer(){
+    public void copyAddressFromCustomer() {
         setFirstName(customer.getFirstName());
         setLastName(customer.getLastName());
         setPhoneNumber(customer.getPhoneNumber());
@@ -260,5 +260,14 @@ public class Order {
                 ", status=" + status +
                 ", customer=" + customer.getFullName() +
                 '}';
+    }
+
+    @Transient
+    public String getDestination() {
+        String destination = city + ", ";
+        if (state != null && !state.isEmpty()) destination += state + ", ";
+        destination += country;
+
+        return destination;
     }
 }

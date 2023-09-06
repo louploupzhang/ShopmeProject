@@ -95,9 +95,17 @@ public class AddressRepositoryTests {
     }
 
     @Test
-    public void testSetNonDefaultAddresses(){
+    public void testSetNonDefaultAddresses() {
         Integer addressId = 4;
         Integer customerId = 5;
         repo.setNonDefaultForOthers(addressId, customerId);
+    }
+
+    @Test
+    public void testGetDefault() {
+        Integer customerId = 5;
+        Address address = repo.findDefaultByCustomer(customerId);
+        assertThat(address).isNotNull();
+        System.out.println(address);
     }
 }

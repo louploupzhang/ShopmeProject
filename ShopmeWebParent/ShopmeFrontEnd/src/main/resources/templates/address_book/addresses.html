@@ -29,7 +29,17 @@
                             </th:block>
 
                             <th:block th:unless="${usePrimaryAddressAsDefault}">
-                                <a th:href="@{'/address_book/default/0'}">[Set as default]</a>
+                                <th:block th:unless="${param.redirect}">
+                                    <a th:href="@{'/address_book/default/0'}">[Set as default]</a>
+                                </th:block>
+                                <th:block th:if="${param.redirect}">
+                                    <th:block th:if="${param.redirect[0]=='cart'}">
+                                        <a th:href="@{'/address_book/default/0?redirect=cart'}">[Set as default]</a>
+                                    </th:block>
+                                    <th:block th:if="${param.redirect[0]=='checkout'}">
+                                        <a th:href="@{'/address_book/default/0?redirect=checkout'}">[Set as default]</a>
+                                    </th:block>
+                                </th:block>
                             </th:block>
                         </div>
                         <div class="col">
@@ -52,14 +62,21 @@
                     <div class="card-header">
                         <div class="row">
                             <div class="col">
-                                <b>Address #[[${status.count + 1}]]</b>
+                                <b>Address [[${status.count + 1}]]</b>
                                 <th:block th:if="${address.defaultForShipping}">
-                                    <span class="text-danger">[Default]</span>
+                                    <span class="text-danger"
+                                          th:text="${param.redirect != null && param.redirect[0] == 'checkout' ? '[Currently Selected]' : '[Default]'} "></span>
+                                </th:block>
+                                <th:block th:unless="${address.defaultForShipping}">
+                                    <a th:unless="${param.redirect}"
+                                       th:href="@{'/address_book/default/' + ${address.id}}">[Set as Default]</a>
+                                    <a th:if="${param.redirect != null && param.redirect[0] == 'cart'}"
+                                       th:href="@{'/address_book/default/' + ${address.id} + '?redirect=cart'}">[Set as
+                                        Default]</a>
+                                    <a th:if="${param.redirect != null && param.redirect[0] == 'checkout'}"
+                                       th:href="@{'/address_book/default/' + ${address.id} + '?redirect=cart'}">[Choose]</a>
                                 </th:block>
 
-                                <th:block th:unless="${address.defaultForShipping}">
-                                    <a th:href="@{'/address_book/default/' + ${address.id}}">[Set as default]</a>
-                                </th:block>
                             </div>
                             <div class="col">
                                 <div class="float-right">

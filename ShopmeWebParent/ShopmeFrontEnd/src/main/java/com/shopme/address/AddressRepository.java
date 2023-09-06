@@ -8,7 +8,7 @@ import org.springframework.data.repository.CrudRepository;
 
 import java.util.List;
 
-public interface AddressRepository extends CrudRepository<Address,Integer> {
+public interface AddressRepository extends CrudRepository<Address, Integer> {
     List<Address> findByCustomer(Customer customer);
 
     @Query("select a from Address a where a.id = ?1 and a.customer.id = ?2")
@@ -25,4 +25,7 @@ public interface AddressRepository extends CrudRepository<Address,Integer> {
     @Query("update Address a set a.defaultForShipping = false where a.id != ?1 and a.customer.id = ?2")
     @Modifying
     void setNonDefaultForOthers(Integer defaultAddressId, Integer customerId);
+
+    @Query("select a from Address a where a.customer.id = ?1 and a.defaultForShipping = true")
+    Address findDefaultByCustomer(Integer customerId);
 }

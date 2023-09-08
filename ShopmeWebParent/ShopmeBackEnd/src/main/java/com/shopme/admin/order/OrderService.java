@@ -1,6 +1,8 @@
 package com.shopme.admin.order;
 
 import com.shopme.admin.paging.PagingAndSortingHelper;
+import com.shopme.admin.setting.country.CountryRepository;
+import com.shopme.common.entity.Country;
 import com.shopme.common.entity.order.Order;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -9,6 +11,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.NoSuchElementException;
 
 @Service
@@ -16,7 +19,9 @@ public class OrderService {
     private static final int ORDERS_PER_PAGE = 10;
 
     @Autowired
-    private OrderRepository repo;
+    private OrderRepository orderRepo;
+    @Autowired
+    private CountryRepository countryRepo;
 
     public void listByPage(int pageNum, PagingAndSortingHelper helper) {
         String sortField = helper.getSortField();
@@ -36,9 +41,9 @@ public class OrderService {
 
         Page<Order> page = null;
         if (keyword != null) {
-            page = repo.findAll(keyword, pageable);
+            page = orderRepo.findAll(keyword, pageable);
         } else {
-            page = repo.findAll(pageable);
+            page = orderRepo.findAll(pageable);
         }
 
         helper.updateModelAttributes(pageNum, page);
@@ -46,18 +51,22 @@ public class OrderService {
 
     public Order get(Integer id) throws OrderNotFoundException {
         try {
-            return repo.findById(id).get();
+            return orderRepo.findById(id).get();
         } catch (NoSuchElementException e) {
             throw new OrderNotFoundException("Could not find any orders with ID " + id);
         }
     }
 
     public void delete(Integer id) throws OrderNotFoundException {
-        Long count = repo.countById(id);
+        Long count = orderRepo.countById(id);
         if (count == null || count == 0) {
             throw new OrderNotFoundException("Could not find any orders with ID " + id);
         }
 
-        repo.deleteById(id);
+        orderRepo.deleteById(id);
+    }
+
+    public List<Country> listAllCountries() {
+        return countryRepo.findAllByOrderByNameAsc();
     }
 }

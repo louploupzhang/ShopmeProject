@@ -3,6 +3,7 @@ package com.shopme.admin.order;
 import com.shopme.admin.paging.PagingAndSortingHelper;
 import com.shopme.admin.paging.PagingAndSortingParam;
 import com.shopme.admin.setting.SettingService;
+import com.shopme.common.entity.Country;
 import com.shopme.common.entity.order.Order;
 import com.shopme.common.entity.setting.Setting;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -72,5 +73,23 @@ public class OrderController {
         }
 
         return defaultRedirectURL;
+    }
+
+    @GetMapping("/orders/edit/{id}")
+    public String editOrder(@PathVariable("id") Integer id, Model model, RedirectAttributes ra, HttpServletRequest request) {
+        try {
+            Order order = orderService.get(id);
+
+            List<Country> listCountries = orderService.listAllCountries();
+
+            model.addAttribute("pageTitle", "Edit Order (ID: " + id + ")");
+            model.addAttribute("order", order);
+            model.addAttribute("listCountries", listCountries);
+
+            return "orders/order_form";
+        } catch (OrderNotFoundException e) {
+            ra.addFlashAttribute("message", e.getMessage());
+            return defaultRedirectURL;
+        }
     }
 }

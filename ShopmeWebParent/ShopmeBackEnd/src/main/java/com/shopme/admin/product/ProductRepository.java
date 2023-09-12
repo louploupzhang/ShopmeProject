@@ -27,4 +27,7 @@ public interface ProductRepository extends SearchRepository<Product, Integer> {
     @Query("select p from Product p where (p.category.id = ?1 or p.category.allParentIDs like %?2%) and "
     + "(p.name like %?3% or p.shortDescription like %?3% or p.fullDescription like %?3% or p.brand.name like %?3% or p.category.name like %?3%)")
     public Page<Product> searchInCategory(Integer categoryId, String categoryIdMatch, String keyword, Pageable pageable);
+
+    @Query("select p from Product p where p.name like %?1%")
+    Page<Product> searchProductsByName(String keyword, Pageable pageable);
 }

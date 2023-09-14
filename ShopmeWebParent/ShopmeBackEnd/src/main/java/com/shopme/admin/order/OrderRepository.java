@@ -7,7 +7,9 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.PagingAndSortingRepository;
 
 public interface OrderRepository extends PagingAndSortingRepository<Order, Integer> {
-    @Query("select o from Order o where o.firstName like %?1% or"
+    @Query("select o from Order o where concat('#', o.id) like %?1% or"
+            + " concat(o.firstName, ' ', o.lastName) like %?1% or"
+            + " o.firstName like %?1% or"
             + " o.lastName like %?1% or o.phoneNumber like %?1% or"
             + " o.addressLine1 like %?1% or o.addressLine2 like %?1% or"
             + " o.postalCode like %?1% or o.city like %?1% or"

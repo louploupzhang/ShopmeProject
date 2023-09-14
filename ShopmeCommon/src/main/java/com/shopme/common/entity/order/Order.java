@@ -197,28 +197,14 @@ public class Order extends AbstractAddress {
     public String getShippingAddress() {
         String address = firstName;
 
-        if (lastName != null && !lastName.isEmpty()) {
-            address += " " + lastName;
-        }
-        if (!addressLine1.isEmpty()) {
-            address += ", " + addressLine1;
-        }
-        if (addressLine2 != null && !addressLine2.isEmpty()) {
-            address += ", " + addressLine2;
-        }
-        if (!city.isEmpty()) {
-            address += ", " + city;
-        }
-        if (state != null && !state.isEmpty()) {
-            address += ", " + state;
-        }
+        if (lastName != null && !lastName.isEmpty()) address += " " + lastName;
+        if (!addressLine1.isEmpty()) address += ", " + addressLine1;
+        if (addressLine2 != null && !addressLine2.isEmpty()) address += ", " + addressLine2;
+        if (!city.isEmpty()) address += ", " + city;
+        if (state != null && !state.isEmpty()) address += ", " + state;
         address += ", " + country;
-        if (!postalCode.isEmpty()) {
-            address += ". Postal Code: " + postalCode;
-        }
-        if (!phoneNumber.isEmpty()) {
-            address += ". Phone Number: " + phoneNumber;
-        }
+        if (!postalCode.isEmpty()) address += ". Postal Code: " + postalCode;
+        if (!phoneNumber.isEmpty()) address += ". Phone Number: " + phoneNumber;
 
         return address;
     }
@@ -244,5 +230,59 @@ public class Order extends AbstractAddress {
         } catch (ParseException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    @Transient
+    public String getRecipientName() {
+        String name = firstName;
+        if (lastName != null && !lastName.isEmpty()) name += " " + lastName;
+        return name;
+    }
+
+    @Transient
+    public String getRecipientAddress() {
+        String address = addressLine1;
+
+        if (addressLine2 != null && !addressLine2.isEmpty()) address += ", " + addressLine2;
+        if (!city.isEmpty()) address += ", " + city;
+        if (state != null && !state.isEmpty()) address += ", " + state;
+        address += ", " + country;
+        if (!postalCode.isEmpty()) address += ". " + postalCode;
+
+        return address;
+    }
+
+    @Transient
+    public boolean isCOD() {
+        return paymentMethod.equals(PaymentMethod.COD);
+    }
+
+    @Transient
+    public boolean isPicked() {
+        return hasStatus(OrderStatus.PICKED);
+    }
+
+    @Transient
+    public boolean isShipping() {
+        return hasStatus(OrderStatus.SHIPPING);
+    }
+
+    @Transient
+    public boolean isDelivered() {
+        return hasStatus(OrderStatus.DELIVERED);
+    }
+
+    @Transient
+    public boolean isReturned() {
+        return hasStatus(OrderStatus.RETURNED);
+    }
+
+    public boolean hasStatus(OrderStatus status) {
+        for (OrderTrack aTrack : orderTracks) {
+            if (aTrack.getStatus().equals(status)) {
+                return true;
+            }
+        }
+        return false;
     }
 }

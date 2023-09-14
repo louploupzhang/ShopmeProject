@@ -150,14 +150,14 @@ public class OrderRepositoryTests {
 
     @Test
     public void testUpdateOrderTracks() {
-        Integer orderId = 13;
+        Integer orderId = 14;
         Order order = repo.findById(orderId).get();
 
         OrderTrack newTrack = new OrderTrack();
         newTrack.setOrder(order);
         newTrack.setUpdatedTime(new Date());
-        newTrack.setStatus(OrderStatus.NEW);
-        newTrack.setNotes(OrderStatus.NEW.defaultDescription());
+        newTrack.setStatus(OrderStatus.PICKED);
+        newTrack.setNotes(OrderStatus.PICKED.defaultDescription());
 
         OrderTrack processingTrack = new OrderTrack();
         processingTrack.setOrder(order);

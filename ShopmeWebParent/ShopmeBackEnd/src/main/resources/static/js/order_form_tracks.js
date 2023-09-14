@@ -1,16 +1,16 @@
-$(document).ready(function() {
-    $("#trackList").on("click", ".linkRemoveTrack", function(e) {
+$(document).ready(function () {
+    $("#trackList").on("click", ".linkRemoveTrack", function (e) {
         e.preventDefault();
         deleteTrack($(this));
         updateTrackCountNumbers();
     });
 
-    $("#track").on("click", "#linkAddTrack", function(e) {
+    $("#track").on("click", "#linkAddTrack", function (e) {
         e.preventDefault();
         addNewTrackRecord();
     });
 
-    $("#trackList").on("change", ".dropDownStatus", function(e) {
+    $("#trackList").on("change", ".dropDownStatus", function (e) {
         dropDownList = $(this);
         rowNumber = dropDownList.attr("rowNumber");
         selectedOption = $("option:selected", dropDownList);

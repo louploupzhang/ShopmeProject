@@ -7,6 +7,10 @@ import com.shopme.common.entity.Customer;
 import com.shopme.common.entity.order.*;
 import com.shopme.common.entity.product.Product;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
@@ -15,17 +19,18 @@ import java.util.Set;
 
 @Service
 public class OrderService {
+    public static final int ORDERS_PER_PAGE = 5;
     @Autowired
     private OrderRepository repo;
 
     public Order createOrder(Customer customer, Address address, List<CartItem> cartItems,
-                             PaymentMethod paymentMethod, CheckoutInfo checkoutInfo){
+                             PaymentMethod paymentMethod, CheckoutInfo checkoutInfo) {
         Order newOrder = new Order();
         newOrder.setOrderTime(new Date());
 
-        if(paymentMethod.equals(PaymentMethod.PAYPAL)) {
+        if (paymentMethod.equals(PaymentMethod.PAYPAL)) {
             newOrder.setStatus(OrderStatus.PAID);
-        }else {
+        } else {
             newOrder.setStatus(OrderStatus.NEW);
         }
 
@@ -39,9 +44,9 @@ public class OrderService {
         newOrder.setDeliverDays(checkoutInfo.getDeliverDays());
         newOrder.setDeliverDate(checkoutInfo.getDeliverDate());
 
-        if(address ==null){ //The recipient's address is the same as the customer's
+        if (address == null) { //The recipient's address is the same as the customer's
             newOrder.copyAddressFromCustomer();
-        }else {
+        } else {
             newOrder.copyShippingAddress(address);
         }
 
@@ -54,7 +59,7 @@ public class OrderService {
             orderDetail.setProduct(product);
             orderDetail.setQuantity(cartItem.getQuantity());
             orderDetail.setUnitPrice(product.getDiscountPrice());
-            orderDetail.setProductCost(product.getCost()*cartItem.getQuantity());
+            orderDetail.setProductCost(product.getCost() * cartItem.getQuantity());
             orderDetail.setSubtotal(cartItem.getSubtotal());
             orderDetail.setShippingCost(cartItem.getShippingCost());
 
@@ -71,5 +76,17 @@ public class OrderService {
         newOrder.getOrderTracks().add(track);
 
         return repo.save(newOrder);
+    }
+
+    public Page<Order> listForCustomerByPage(Customer customer, int pageNum, String sortField, String sortDir, String keyword) {
+        Sort sort = Sort.by(sortField);
+        sort = sortDir.equals("asc") ? sort.ascending() : sort.descending();
+
+        Pageable pageable = PageRequest.of(pageNum - 1, ORDERS_PER_PAGE, sort);
+
+        if (keyword != null) {
+            return repo.findAll(keyword, customer.getId(), pageable);
+        }
+        return repo.findAll(customer.getId(), pageable);
     }
 }

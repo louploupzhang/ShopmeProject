@@ -3,6 +3,7 @@ package com.shopme.order;
 import com.shopme.Utility;
 import com.shopme.common.entity.Customer;
 import com.shopme.common.entity.order.Order;
+import com.shopme.common.entity.order.OrderDetail;
 import com.shopme.customer.CustomerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -55,6 +56,17 @@ public class OrderController {
         model.addAttribute("endCount", endCount);
 
         return "orders/orders_customer";
+    }
+
+    @GetMapping("/orders/detail/{id}")
+    public String viewOrderDetails(Model model, @PathVariable(name = "id") Integer id,
+                                   HttpServletRequest request) {
+        Customer customer = getAuthenticatedCustomer(request);
+        Order order = orderService.getOrder(id, customer);
+
+        model.addAttribute("order", order);
+
+        return "orders/order_details_modal";
     }
 
     private Customer getAuthenticatedCustomer(HttpServletRequest request) {

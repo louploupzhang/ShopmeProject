@@ -3,6 +3,7 @@ package com.shopme.admin.user.controller;
 import java.io.IOException;
 import java.util.List;
 
+import com.shopme.admin.AmazonS3Util;
 import com.shopme.admin.paging.PagingAndSortingHelper;
 import com.shopme.admin.paging.PagingAndSortingParam;
 import com.shopme.admin.user.UserNotFoundException;
@@ -78,8 +79,8 @@ public class UserController {
 
             String uploadDir = "user-photos/" + savedUser.getId();
 
-            FileUploadUtil.cleanDir(uploadDir);
-            FileUploadUtil.saveFile(uploadDir, fileName, multipartFile);
+            AmazonS3Util.removeFolder(uploadDir);
+            AmazonS3Util.uploadFile(uploadDir, fileName, multipartFile.getInputStream());
         } else {
             if (user.getPhotos().isEmpty())
                 user.setPhotos(null);
@@ -121,6 +122,9 @@ public class UserController {
                              RedirectAttributes redirectAttributes) {
         try {
             service.delete(id);
+            String userPhotosDir = "user-photos/" + id;
+            AmazonS3Util.removeFolder(userPhotosDir);
+
             redirectAttributes.addFlashAttribute("message", "The user ID " + id + " has been deleted successfully");
         } catch (UserNotFoundException ex) {
             redirectAttributes.addFlashAttribute("message", ex.getMessage());

@@ -13,7 +13,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 @Configuration
 public class MvcConfig implements WebMvcConfigurer {
 
-    @Override
+    /*@Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
         //Display user photos
         exposeDirectory("user-photos", registry);
@@ -35,7 +35,7 @@ public class MvcConfig implements WebMvcConfigurer {
 
         registry.addResourceHandler(logicalPath).
                 addResourceLocations("file:/" + absolutePath + "/");
-    }
+    }*/
 
     @Override
     public void addArgumentResolvers(List<HandlerMethodArgumentResolver> resolvers) {

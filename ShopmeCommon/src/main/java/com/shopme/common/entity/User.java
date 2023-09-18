@@ -1,5 +1,7 @@
 package com.shopme.common.entity;
 
+import com.shopme.common.Constants;
+
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
@@ -8,7 +10,7 @@ import javax.persistence.*;
 
 @Entity
 @Table(name = "users")
-public class User extends IdBasedEntity{
+public class User extends IdBasedEntity {
 
     @Column(length = 128, nullable = false, unique = true)
     private String email;
@@ -112,7 +114,7 @@ public class User extends IdBasedEntity{
         if (id == null || photos == null)
             return "/images/default-user.png";
 
-        return "/user-photos/" + this.id + "/" + this.photos;
+        return Constants.S3_BASE_URI + "/user-photos/" + this.id + "/" + this.photos;
     }
 
     @Transient

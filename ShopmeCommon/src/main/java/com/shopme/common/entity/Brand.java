@@ -1,5 +1,7 @@
 package com.shopme.common.entity;
 
+import com.shopme.common.Constants;
+
 import javax.persistence.*;
 import java.util.HashSet;
 import java.util.Set;
@@ -74,6 +76,6 @@ public class Brand extends IdBasedEntity{
     @Transient
     public String getLogoPath() {
         if (this.id == null) return "/images/image-thumbnail.png";
-        return "/brand-logos/" + this.id + "/" + this.logo;
+        return Constants.S3_BASE_URI + "/brand-logos/" + this.id + "/" + this.logo;
     }
 }

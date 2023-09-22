@@ -6,6 +6,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.PagingAndSortingRepository;
 
+import java.util.Date;
+import java.util.List;
+
 public interface OrderRepository extends PagingAndSortingRepository<Order, Integer> {
     @Query("select o from Order o where concat('#', o.id) like %?1% or"
             + " concat(o.firstName, ' ', o.lastName) like %?1% or"
@@ -19,4 +22,8 @@ public interface OrderRepository extends PagingAndSortingRepository<Order, Integ
     Page<Order> findAll(String keyword, Pageable pageable);
 
     Long countById(Integer id);
+
+    @Query("select new com.shopme.common.entity.order.Order(o.id, o.orderTime, o.productCost, o.subtotal, o.total)"
+            + " from Order o where o.orderTime between ?1 and ?2 order by o.orderTime asc")
+    List<Order> findByOrderTimeBetween(Date startTime, Date endTime);
 }

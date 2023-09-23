@@ -37,6 +37,7 @@ public class OrderDetailRepositoryTests {
                     detail.getQuantity(), detail.getProductCost(), detail.getShippingCost(), detail.getSubtotal());
         }
     }
+
     @Test
     public void testFindWithProductAndTimeBetween() throws ParseException {
         DateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd");

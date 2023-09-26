@@ -24,7 +24,7 @@ public class ReviewRepositoryTests {
 
     @Test
     public void testCreateReview() {
-        Integer productId = 2;
+        Integer productId = 33;
         Product product = new Product(productId);
 
         Integer customerId = 3;
@@ -36,9 +36,9 @@ public class ReviewRepositoryTests {
         review.setReviewTime(new Date());
 //        review.setHeadline("Perfect for my needs. Loving it!");
 //        review.setComment("Nice to have: wireless remote, iOS app, GPS...");
-        review.setHeadline("Bad item.");
-        review.setComment("Bad quality!");
-        review.setRating(1);
+        review.setHeadline("Not bad product.");
+        review.setComment("This is what I want.");
+        review.setRating(4);
 
         Review savedReview = repo.save(review);
 

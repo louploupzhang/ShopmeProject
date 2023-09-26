@@ -45,11 +45,10 @@ public class PagingAndSortingHelper {
     }
 
     public void listEntities(int pageNum, int pageSize, SearchRepository<?, Integer> repo) {
-        Sort sort = Sort.by(sortField);
+//        Sort sort = Sort.by(sortField);
+//        sort = sortDir.equals("asc") ? sort.ascending() : sort.descending();
 
-        sort = sortDir.equals("asc") ? sort.ascending() : sort.descending();
-
-        Pageable pageable = PageRequest.of(pageNum - 1, pageSize, sort);
+        Pageable pageable = createPageable(pageSize, pageNum);
         Page<?> page = null;
 
         if (keyword != null) {

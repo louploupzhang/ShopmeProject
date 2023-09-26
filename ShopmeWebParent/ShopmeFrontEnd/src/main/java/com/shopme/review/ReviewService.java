@@ -2,6 +2,7 @@ package com.shopme.review;
 
 import com.shopme.common.entity.Customer;
 import com.shopme.common.entity.Review;
+import com.shopme.common.entity.product.Product;
 import com.shopme.common.exception.ReviewNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -35,5 +36,12 @@ public class ReviewService {
         if (review == null) throw new ReviewNotFoundException("Customer does not have any reviews with ID " + reviewId);
 
         return review;
+    }
+
+    public Page<Review> list3MostRecentReviewsByProduct(Product product) {
+        Sort sort = Sort.by("reviewTime").descending();
+        Pageable pageable = PageRequest.of(0, 3, sort);
+
+        return repo.findByProduct(product, pageable);
     }
 }

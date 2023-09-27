@@ -4,7 +4,9 @@ import com.shopme.Utility;
 import com.shopme.common.entity.Customer;
 import com.shopme.common.entity.order.Order;
 import com.shopme.common.entity.order.OrderDetail;
+import com.shopme.common.entity.product.Product;
 import com.shopme.customer.CustomerService;
+import com.shopme.review.ReviewService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
@@ -13,6 +15,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.Iterator;
 import java.util.List;
 
 @Controller
@@ -21,6 +24,8 @@ public class OrderController {
     private OrderService orderService;
     @Autowired
     private CustomerService customerService;
+    @Autowired
+    private ReviewService reviewService;
 
     @GetMapping("/orders")
     public String listFirstPage(Model model, HttpServletRequest request) {
@@ -64,9 +69,28 @@ public class OrderController {
         Customer customer = getAuthenticatedCustomer(request);
         Order order = orderService.getOrder(id, customer);
 
+        setProductReviewableStatus(customer, order);
+
         model.addAttribute("order", order);
 
         return "orders/order_details_modal";
+    }
+
+    private void setProductReviewableStatus(Customer customer, Order order) {
+        Iterator<OrderDetail> iterator = order.getOrderDetails().iterator();
+        while (iterator.hasNext()){
+            OrderDetail orderDetail = iterator.next();
+            Product product = orderDetail.getProduct();
+            Integer productId = product.getId();
+
+            boolean didCustomerReviewProduct = reviewService.didCustomerReviewProduct(customer, productId);
+            product.setReviewedByCustomer(didCustomerReviewProduct);
+
+            if(!didCustomerReviewProduct){
+                boolean canCustomerReviewProduct = reviewService.canCustomerReviewProduct(customer, productId);
+                product.setCustomerCanReview(canCustomerReviewProduct);
+            }
+        }
     }
 
     private Customer getAuthenticatedCustomer(HttpServletRequest request) {

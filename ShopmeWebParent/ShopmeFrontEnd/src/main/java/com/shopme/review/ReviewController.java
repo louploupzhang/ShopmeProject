@@ -14,6 +14,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpServletRequest;
@@ -61,7 +62,7 @@ public class ReviewController {
 
         model.addAttribute("endCount", endCount);
 
-        return "reviews/review_customer";
+        return "reviews/reviews_customer";
     }
 
     private Customer getAuthenticatedCustomer(HttpServletRequest request) {
@@ -142,20 +143,41 @@ public class ReviewController {
         Customer customer = getAuthenticatedCustomer(request);
         boolean customerReviewed = reviewService.didCustomerReviewProduct(customer, product.getId());
 
-        if(customerReviewed){
-            model.addAttribute("customerReviewed",customerReviewed);
-        }else {
+        if (customerReviewed) {
+            model.addAttribute("customerReviewed", customerReviewed);
+        } else {
             boolean customerCanReview = reviewService.canCustomerReviewProduct(customer, product.getId());
-            if(customerCanReview){
-                model.addAttribute("customerCanReview",customerCanReview);
-            }else {
-                model.addAttribute("NoReviewPermission",true);
+            if (customerCanReview) {
+                model.addAttribute("customerCanReview", customerCanReview);
+            } else {
+                model.addAttribute("NoReviewPermission", true);
             }
         }
 
         model.addAttribute("product", product);
         model.addAttribute("review", review);
 
-        return "reviews/reviews_form";
+        return "reviews/review_form";
+    }
+
+    @PostMapping("/post_review")
+    public String saveReview(Model model, Review review, Integer productId, HttpServletRequest request) {
+        Customer customer = getAuthenticatedCustomer(request);
+
+        Product product = null;
+        try {
+            product = productService.getProduct(productId);
+        } catch (ProductNotFoundException e) {
+            return "error/404";
+        }
+
+        review.setProduct(product);
+        review.setCustomer(customer);
+
+        Review savedReview = reviewService.save(review);
+
+        model.addAttribute("review", savedReview);
+
+        return "reviews/review_done";
     }
 }

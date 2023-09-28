@@ -1,5 +1,6 @@
 package com.shopme.review;
 
+import com.shopme.ControllerHelper;
 import com.shopme.Utility;
 import com.shopme.common.entity.Customer;
 import com.shopme.common.entity.Review;
@@ -30,6 +31,8 @@ public class ReviewController {
     private CustomerService customerService;
     @Autowired
     private ProductService productService;
+    @Autowired
+    private ControllerHelper controllerHelper;
 
     @GetMapping("/reviews")
     public String listFirstPage(Model model) {
@@ -40,7 +43,7 @@ public class ReviewController {
     public String listReviewsByCustomerByPage(Model model, HttpServletRequest request,
                                               @PathVariable(name = "pageNum") int pageNum,
                                               String keyword, String sortField, String sortDir) {
-        Customer customer = getAuthenticatedCustomer(request);
+        Customer customer = controllerHelper.getAuthenticatedCustomer(request);
         Page<Review> page = reviewService.listByCustomerByPage(customer, keyword, pageNum, sortField, sortDir);
         List<Review> listReviews = page.getContent();
 
@@ -65,15 +68,10 @@ public class ReviewController {
         return "reviews/reviews_customer";
     }
 
-    private Customer getAuthenticatedCustomer(HttpServletRequest request) {
-        String email = Utility.getEmailOfAuthenticatedCustomer(request);
-        return customerService.getCustomerByEmail(email);
-    }
-
     @GetMapping("/reviews/detail/{id}")
     public String viewReview(@PathVariable("id") Integer id, Model model, RedirectAttributes ra,
                              HttpServletRequest request) {
-        Customer customer = getAuthenticatedCustomer(request);
+        Customer customer = controllerHelper.getAuthenticatedCustomer(request);
         try {
             Review review = reviewService.getByCustomerAndId(customer, id);
             model.addAttribute("review", review);
@@ -140,7 +138,7 @@ public class ReviewController {
             return "error/404";
         }
 
-        Customer customer = getAuthenticatedCustomer(request);
+        Customer customer = controllerHelper.getAuthenticatedCustomer(request);
         boolean customerReviewed = reviewService.didCustomerReviewProduct(customer, product.getId());
 
         if (customerReviewed) {
@@ -162,7 +160,7 @@ public class ReviewController {
 
     @PostMapping("/post_review")
     public String saveReview(Model model, Review review, Integer productId, HttpServletRequest request) {
-        Customer customer = getAuthenticatedCustomer(request);
+        Customer customer = controllerHelper.getAuthenticatedCustomer(request);
 
         Product product = null;
         try {

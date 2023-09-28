@@ -1,5 +1,6 @@
 package com.shopme.checkout;
 
+import com.shopme.ControllerHelper;
 import com.shopme.Utility;
 import com.shopme.address.AddressService;
 import com.shopme.checkout.paypal.PayPalService;
@@ -53,10 +54,12 @@ public class CheckoutController {
     private SettingService settingService;
     @Autowired
     private PayPalService paypalService;
+    @Autowired
+    private ControllerHelper controllerHelper;
 
     @GetMapping("/checkout")
     public String showCheckoutPage(Model model, HttpServletRequest request) {
-        Customer customer = getAuthenticatedCustomer(request);
+        Customer customer = controllerHelper.getAuthenticatedCustomer(request);
 
         Address defaultAddress = addressService.getDefaultAddress(customer);
         ShippingRate shippingRate = null;
@@ -88,18 +91,12 @@ public class CheckoutController {
         return "checkout/checkout";
     }
 
-    private Customer getAuthenticatedCustomer(HttpServletRequest request) {
-        String email = Utility.getEmailOfAuthenticatedCustomer(request);
-
-        return customerService.getCustomerByEmail(email);
-    }
-
     @PostMapping("/place_order")
     public String placeOrder(HttpServletRequest request) throws MessagingException, UnsupportedEncodingException {
         String paymentType = request.getParameter("paymentMethod");
         PaymentMethod paymentMethod = PaymentMethod.valueOf(paymentType);
 
-        Customer customer = getAuthenticatedCustomer(request);
+        Customer customer = controllerHelper.getAuthenticatedCustomer(request);
 
         Address defaultAddress = addressService.getDefaultAddress(customer);
         ShippingRate shippingRate = null;

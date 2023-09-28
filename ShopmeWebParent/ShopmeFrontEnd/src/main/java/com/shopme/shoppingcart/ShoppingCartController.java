@@ -1,5 +1,6 @@
 package com.shopme.shoppingcart;
 
+import com.shopme.ControllerHelper;
 import com.shopme.Utility;
 import com.shopme.address.AddressService;
 import com.shopme.common.entity.Address;
@@ -27,10 +28,12 @@ public class ShoppingCartController {
     private AddressService addressService;
     @Autowired
     private ShippingRateService shipService;
+    @Autowired
+    private ControllerHelper controllerHelper;
 
     @GetMapping("/cart")
     public String viewCart(Model model, HttpServletRequest request) {
-        Customer customer = getAuthenticatedCustomer(request);
+        Customer customer = controllerHelper.getAuthenticatedCustomer(request);
         List<CartItem> cartItems = cartService.listCartItems(customer);
 
         float estimatedTotal = 0.0f;
@@ -54,11 +57,5 @@ public class ShoppingCartController {
         model.addAttribute("estimatedTotal", estimatedTotal);
 
         return "cart/shopping_cart";
-    }
-
-    private Customer getAuthenticatedCustomer(HttpServletRequest request) {
-        String email = Utility.getEmailOfAuthenticatedCustomer(request);
-
-        return customerService.getCustomerByEmail(email);
     }
 }

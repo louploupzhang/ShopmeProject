@@ -52,9 +52,9 @@ public class ReviewRepositoryTests {
     }
 
     @Test
-    public void testFindByProduct(){
+    public void testFindByProduct() {
         Product product = new Product(2);
-        Pageable pageable=PageRequest.of(0,3);
+        Pageable pageable = PageRequest.of(0, 3);
         Page<Review> page = repo.findByProduct(product, pageable);
 
         assertThat(page.getTotalElements()).isGreaterThan(1);
@@ -64,11 +64,20 @@ public class ReviewRepositoryTests {
     }
 
     @Test
-    public void testCountyByCustomerAndProduct(){
+    public void testCountyByCustomerAndProduct() {
         Integer customerId = 5;
         Integer productId = 1;
         Long count = repo.countByCustomerAndProduct(customerId, productId);
 
         assertThat(count).isEqualTo(1);
+    }
+
+    @Test
+    public void testUpdateVoteCount() {
+        Integer reviewId = 5;
+        repo.updateVoteCount(reviewId);
+        Review review = repo.findById(reviewId).get();
+
+        assertThat(review.getVotes()).isEqualTo(2);
     }
 }

@@ -5,6 +5,7 @@ import com.shopme.common.entity.product.Product;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 
 public interface ReviewRepository extends JpaRepository<Review, Integer> {
@@ -22,4 +23,9 @@ public interface ReviewRepository extends JpaRepository<Review, Integer> {
 
     @Query("select count(r.id) from Review r where r.customer.id = ?1 and r.product.id = ?2")
     Long countByCustomerAndProduct(Integer customerId, Integer productId);
+
+    @Query("update Review r set r.votes = (select sum(v.votes) from ReviewVote v where v.review.id = ?1)" +
+            " where r.id = ?1")
+    @Modifying
+    void updateVoteCount(Integer reviewId);
 }

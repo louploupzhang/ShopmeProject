@@ -7,9 +7,11 @@ import com.shopme.review.ReviewRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.util.NoSuchElementException;
 
 @Service
+@Transactional
 public class ReviewVoteService {
     @Autowired
     private ReviewRepository reviewRepo;

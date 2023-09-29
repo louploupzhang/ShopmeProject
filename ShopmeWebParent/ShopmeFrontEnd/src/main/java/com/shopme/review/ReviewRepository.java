@@ -28,4 +28,7 @@ public interface ReviewRepository extends JpaRepository<Review, Integer> {
             " where r.id = ?1")
     @Modifying
     void updateVoteCount(Integer reviewId);
+
+    @Query("select r.votes from Review r where r.id = ?1")
+    Integer getVoteCount(Integer reviewId);
 }

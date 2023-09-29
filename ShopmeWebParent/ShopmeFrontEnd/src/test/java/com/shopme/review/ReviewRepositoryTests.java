@@ -9,6 +9,7 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.test.annotation.Rollback;
 
 import java.util.List;
 
@@ -16,6 +17,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
+@Rollback(false)
 public class ReviewRepositoryTests {
     @Autowired
     private ReviewRepository repo;
@@ -79,5 +81,13 @@ public class ReviewRepositoryTests {
         Review review = repo.findById(reviewId).get();
 
         assertThat(review.getVotes()).isEqualTo(2);
+    }
+
+    @Test
+    public void testGetVoteCount() {
+        Integer reviewId = 5;
+        Integer voteCount = repo.getVoteCount(reviewId);
+
+        assertThat(voteCount).isEqualTo(2);
     }
 }

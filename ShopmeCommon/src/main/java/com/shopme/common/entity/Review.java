@@ -4,6 +4,7 @@ import com.shopme.common.entity.product.Product;
 
 import javax.persistence.*;
 import java.util.Date;
+import java.util.Objects;
 
 @Entity
 @Table(name = "reviews")
@@ -28,6 +29,12 @@ public class Review extends IdBasedEntity {
     @ManyToOne
     @JoinColumn(name = "customer_id")
     private Customer customer;
+
+    @Transient
+    private boolean upvotedByCurrentCustomer;
+
+    @Transient
+    private boolean downvotedByCurrentCustomer;
 
     public Review() {
     }
@@ -92,6 +99,22 @@ public class Review extends IdBasedEntity {
         this.votes = votes;
     }
 
+    public boolean isUpvotedByCurrentCustomer() {
+        return upvotedByCurrentCustomer;
+    }
+
+    public void setUpvotedByCurrentCustomer(boolean upvotedByCurrentCustomer) {
+        this.upvotedByCurrentCustomer = upvotedByCurrentCustomer;
+    }
+
+    public boolean isDownvotedByCurrentCustomer() {
+        return downvotedByCurrentCustomer;
+    }
+
+    public void setDownvotedByCurrentCustomer(boolean downvotedByCurrentCustomer) {
+        this.downvotedByCurrentCustomer = downvotedByCurrentCustomer;
+    }
+
     @Override
     public String toString() {
         return "Review{" +
@@ -101,5 +124,22 @@ public class Review extends IdBasedEntity {
                 ", product=" + product.getShortName() +
                 ", customer=" + customer.getFullName() +
                 '}';
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        Review other = (Review) obj;
+        return Objects.equals(id, other.id);
     }
 }

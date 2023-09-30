@@ -13,7 +13,7 @@ import java.util.NoSuchElementException;
 @Service
 public class ProductService {
     public static final int PRODUCTS_PER_PAGE = 10;
-    public static final int SEARCH_RESULT_PER_PAGE = 10;
+    public static final int SEARCH_RESULTS_PER_PAGE = 10;
     @Autowired
     private ProductRepository repo;
 
@@ -43,7 +43,7 @@ public class ProductService {
     }
 
     public Page<Product> search(String keyword, int pageNum) {
-        Pageable pageable = PageRequest.of(pageNum - 1, SEARCH_RESULT_PER_PAGE);
+        Pageable pageable = PageRequest.of(pageNum - 1, SEARCH_RESULTS_PER_PAGE);
         return repo.search(keyword, pageable);
     }
 }

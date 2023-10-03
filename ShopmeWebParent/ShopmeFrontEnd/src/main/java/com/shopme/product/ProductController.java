@@ -4,6 +4,9 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
+import com.shopme.common.entity.Question;
+import com.shopme.question.QuestionService;
+import com.shopme.question.vote.QuestionVoteService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
@@ -29,6 +32,8 @@ public class ProductController {
     @Autowired private ReviewService reviewService;
     @Autowired private ReviewVoteService voteService;
     @Autowired private ControllerHelper controllerHelper;
+    @Autowired private QuestionService questionService;
+    @Autowired private QuestionVoteService questionVoteService;
 
     @GetMapping("/c/{category_alias}")
     public String viewCategoryFirstPage(@PathVariable("category_alias") String alias,
@@ -77,6 +82,7 @@ public class ProductController {
         try {
             Product product = productService.getProduct(alias);
             List<Category> listCategoryParents = categoryService.getCategoryParents(product.getCategory());
+            List<Question> listQuestions = questionService.getTop3VotedQuestions(product.getId());
             Page<Review> listReviews = reviewService.list3MostVotedReviewsByProduct(product);
 
             Customer customer = controllerHelper.getAuthenticatedCustomer(request);
@@ -84,6 +90,7 @@ public class ProductController {
             if (customer != null) {
                 boolean customerReviewed = reviewService.didCustomerReviewProduct(customer, product.getId());
                 voteService.markReviewsVotedForProductByCustomer(listReviews.getContent(), product.getId(), customer.getId());
+                questionVoteService.markQuestionsVotedForProductByCustomer(listQuestions, product.getId(), customer.getId());
 
                 if (customerReviewed) {
                     model.addAttribute("customerReviewed", customerReviewed);
@@ -93,10 +100,16 @@ public class ProductController {
                 }
             }
 
+            int numberOfQuestions = questionService.getNumberOfQuestions(product.getId());
+            int numberOfAnsweredQuestions = questionService.getNumberOfAnsweredQuestions(product.getId());
+
             model.addAttribute("listCategoryParents", listCategoryParents);
             model.addAttribute("product", product);
             model.addAttribute("listReviews", listReviews);
             model.addAttribute("pageTitle", product.getShortName());
+            model.addAttribute("listQuestions", listQuestions);
+            model.addAttribute("numberOfQuestions", numberOfQuestions);
+            model.addAttribute("numberOfAnsweredQuestions", numberOfAnsweredQuestions);
 
             return "product/product_detail";
         } catch (ProductNotFoundException e) {
